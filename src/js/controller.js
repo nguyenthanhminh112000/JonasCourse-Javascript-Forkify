@@ -4,7 +4,6 @@ import 'regenerator-runtime/runtime';
 
 const { async } = require('q');
 const recipeContainer = document.querySelector('.recipe');
-
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -30,12 +29,15 @@ const renderSpinner = parentEl => {
 };
 const showRecipe = async function () {
   try {
+    const id = window.location.hash.slice(1);
+    console.log(id);
+    if (!id) return;
     // const respond = await fetch(
     //   'https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bc886'
     // );
     renderSpinner(recipeContainer);
     const respond = await fetch(
-      'https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bc89a'
+      `https://forkify-api.herokuapp.com/api/v2/recipes/${id}`
     );
     const data = await respond.json();
     //console.log(respond,data);
@@ -158,4 +160,5 @@ const showRecipe = async function () {
     alert(err);
   }
 };
-showRecipe();
+window.addEventListener('hashchange', showRecipe);
+window.addEventListener('load', showRecipe);
