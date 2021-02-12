@@ -11,11 +11,13 @@
   "author": "Nguyen Thanh Minh",
   "license": "ISC",
   "devDependencies": {
+    "live-server": "^1.2.1",
     "parcel": "^2.0.0-beta.1",
     "sass": "^1.32.0"
   },
   "dependencies": {
     "core-js": "^3.8.2",
+    "fractional": "^1.0.0",
     "regenerator-runtime": "^0.13.7"
   }
 }
