@@ -1,18 +1,17 @@
+// import
 import { async } from 'regenerator-runtime';
+import { API_URL } from './config.js';
+import { getJSON } from './helpers.js';
 
+// state
 export const state = {
   recipe: {},
 };
 
+// function
 export const loadRecipe = async function (id) {
   try {
-    const respond = await fetch(
-      `https://forkify-api.herokuapp.com/api/v2/recipes/${id}`
-    );
-    const data = await respond.json();
-    if (!respond.ok) {
-      throw new Error(`${respond.status} ${data.message}`);
-    }
+    const data = await getJSON(`${API_URL}/${id}`);
     const { recipe } = data.data;
     state.recipe = {
       cookingTime: recipe.cooking_time,
@@ -25,6 +24,6 @@ export const loadRecipe = async function (id) {
       title: recipe.title,
     };
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
