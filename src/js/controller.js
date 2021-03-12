@@ -23,6 +23,7 @@ const controlRecipes = async function () {
     await model.loadRecipe(id);
     recipeView.render(model.state.recipe);
   } catch (err) {
+    console.log(err);
     recipeView.renderError();
   }
 };
@@ -39,7 +40,7 @@ const controlSearchResults = async function () {
     // 2. Get the results
     await model.loadSearchResults(query);
     //if (!model.state.search.results) return;
-
+    console.log(model.state);
     // 3. Render the results
     resultsView.render(model.getSearchResultsPage(DEFAULT));
     // 4. Render the pagination only one time
@@ -54,9 +55,18 @@ const controlPagination = function (gotoPage) {
   paginationView.render(model.state.search);
   console.log(gotoPage);
 };
+
+const controlServings = function (newServings) {
+  // update the data in state
+  model.updateServings(newServings);
+  //update recipeView
+  recipeView.render(model.state.recipe);
+};
+
 //////////////////////////// INIT AND SET-UP
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerServings(controlServings);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
 };

@@ -11,7 +11,7 @@ class RecipeView extends View {
   _generateMarkup() {
     return `
     <figure class="recipe__fig">
-      <img src="${this._data.imageUrl}" alt="${
+      <img src="${this._data.image}" alt="${
       this._data.title
     }" class="recipe__img" />
       <h1 class="recipe__title">
@@ -39,12 +39,16 @@ class RecipeView extends View {
         <span class="recipe__info-text">servings</span>
 
         <div class="recipe__info-buttons">
-          <button class="btn--tiny btn--increase-servings">
+          <button data-update-to=${
+            this._data.servings - 1
+          } class="btn--tiny btn--decrease-servings">
             <svg>
               <use href="${icons}#icon-minus-circle"></use>
             </svg>
           </button>
-          <button class="btn--tiny btn--increase-servings">
+          <button data-update-to=${
+            this._data.servings + 1
+          } class="btn--tiny btn--increase-servings">
             <svg>
               <use href="${icons}#icon-plus-circle"></use>
             </svg>
@@ -112,10 +116,16 @@ class RecipeView extends View {
     window.addEventListener('hashchange', handler);
     window.addEventListener('load', handler);
   }
+  addHandlerServings(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--tiny');
+      if (!btn) return;
+      const newServings = +btn.dataset.updateTo;
+      if (newServings > 0) {
+        handler(newServings);
+      }
+    });
+  }
 }
-{
-  /* <svg>
-  <use href="${icons}#icon-user"></use>
-</svg>; */
-}
+
 export default new RecipeView();
