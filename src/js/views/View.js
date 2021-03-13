@@ -37,4 +37,30 @@ export default class View {
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   };
+  update(data) {
+    if (!data || (Array.isArray(data) && data.length === 0))
+      return this.renderError();
+    this._data = data;
+    const newMarkup = this._generateMarkup();
+
+    /// create a DOM in computer memory not CHORME
+    const newDOM = document.createRange().createContextualFragment(newMarkup);
+    // convert NodeList to Array
+    const newElements = Array.from(newDOM.querySelectorAll('*'));
+    const curElements = Array.from(this._parentElement.querySelectorAll('*'));
+    // compare newElements with curElements
+    newElements.forEach((newElement, index) => {
+      const curElement = curElements[index];
+      if (!curElement.isEqualNode(newElement)) {
+        // changing the attributes
+        Array.from(newElement.attributes).forEach(attr => {
+          curElement.setAttribute(attr.name, attr.value);
+        });
+        // changing the text
+        if (curElement.firstChild?.nodeValue.trim() !== '') {
+          curElement.textContent = newElement.textContent;
+        }
+      }
+    });
+  }
 }

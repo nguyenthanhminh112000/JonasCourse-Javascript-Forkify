@@ -20,6 +20,7 @@ const controlRecipes = async function () {
     const id = window.location.hash.slice(1);
     if (!id) return;
     recipeView.renderSpinner();
+    resultsView.render(model.getSearchResultsPage());
     await model.loadRecipe(id);
     recipeView.render(model.state.recipe);
   } catch (err) {
@@ -40,7 +41,6 @@ const controlSearchResults = async function () {
     // 2. Get the results
     await model.loadSearchResults(query);
     //if (!model.state.search.results) return;
-    console.log(model.state);
     // 3. Render the results
     resultsView.render(model.getSearchResultsPage(DEFAULT));
     // 4. Render the pagination only one time
@@ -60,7 +60,7 @@ const controlServings = function (newServings) {
   // update the data in state
   model.updateServings(newServings);
   //update recipeView
-  recipeView.render(model.state.recipe);
+  recipeView.update(model.state.recipe);
 };
 
 //////////////////////////// INIT AND SET-UP
