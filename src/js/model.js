@@ -12,6 +12,7 @@ export const state = {
     resultsPerPage: RES_PER_PAGE,
     page: 1,
   },
+  bookmarks: [],
 };
 
 ///////////////////// WRITE MODEL-FUNCTION
@@ -29,6 +30,15 @@ export const loadRecipe = async function (id) {
       sourceUrl: recipe.source_url,
       title: recipe.title,
     };
+    if (
+      state.bookmarks.some(bookmark => {
+        return bookmark.id === id;
+      })
+    ) {
+      state.recipe.bookmarked = true;
+    } else {
+      state.recipe.bookmarked = false;
+    }
   } catch (err) {
     throw err;
   }
@@ -63,4 +73,21 @@ export const updateServings = function (newServings) {
     ing.quantity = ing.quantity * (newServings / state.recipe.servings);
   });
   state.recipe.servings = newServings;
+};
+
+export const addBookmark = function (recipe) {
+  // add bookmark
+  state.bookmarks.push(recipe);
+
+  //
+  state.recipe.bookmarked = true;
+};
+
+export const deleteBookmark = function (id) {
+  // find the index of bookmark that we want to delete
+  const index = state.bookmarks.findIndex(element => element.id === id);
+  // delete the bookmark
+  state.bookmarks.splice(index, 1);
+  //undo the bookmark
+  state.recipe.bookmarked = false;
 };
