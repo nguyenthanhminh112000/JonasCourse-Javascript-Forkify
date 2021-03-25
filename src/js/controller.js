@@ -1,6 +1,7 @@
 /////////////////////////////// IMPORT
 
 import * as model from './model';
+import View from './views/View.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
@@ -22,12 +23,13 @@ const controlRecipes = async function () {
     const id = window.location.hash.slice(1);
     if (!id) return;
     recipeView.renderSpinner();
-    resultsView.render(model.getSearchResultsPage());
-    bookmarksView.render(model.state.bookmarks);
+    resultsView.update(model.getSearchResultsPage());
+    bookmarksView.update(model.state.bookmarks);
     await model.loadRecipe(id);
     recipeView.render(model.state.recipe);
   } catch (err) {
     recipeView.renderError();
+    console.log(err);
   }
 };
 
@@ -39,7 +41,7 @@ const controlSearchResults = async function () {
     if (!query) {
       return;
     }
-
+    bookmarksView.update(model.state.bookmarks);
     // 2. Get the results
     await model.loadSearchResults(query);
     //if (!model.state.search.results) return;
@@ -53,9 +55,8 @@ const controlSearchResults = async function () {
 };
 
 const controlPagination = function (gotoPage) {
-  resultsView.render(model.getSearchResultsPage(gotoPage));
+  resultsView.update(model.getSearchResultsPage(gotoPage));
   paginationView.render(model.state.search);
-  console.log(gotoPage);
 };
 
 const controlServings = function (newServings) {
@@ -77,7 +78,10 @@ const controlBookmark = function () {
   // render bookmarkView
   bookmarksView.render(model.state.bookmarks);
 };
-
+const controlStorage = function () {
+  model.init();
+  bookmarksView.render(model.state.bookmarks);
+};
 //////////////////////////// INIT AND SET-UP
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
@@ -85,5 +89,7 @@ const init = function () {
   recipeView.addHandlerBookmark(controlBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
+  View.addHandlerStorage(controlStorage);
+  controlStorage();
 };
 init();

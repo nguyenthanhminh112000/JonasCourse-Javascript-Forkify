@@ -63,4 +63,7 @@ export default class View {
       }
     });
   }
+  static addHandlerStorage(handler) {
+    window.addEventListener('storage', handler);
+  }
 }

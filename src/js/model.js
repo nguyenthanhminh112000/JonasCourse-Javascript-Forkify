@@ -10,7 +10,7 @@ export const state = {
     query: '',
     results: [],
     resultsPerPage: RES_PER_PAGE,
-    page: 1,
+    page: DEFAULT,
   },
   bookmarks: [],
 };
@@ -74,6 +74,9 @@ export const updateServings = function (newServings) {
   });
   state.recipe.servings = newServings;
 };
+export const persistBookmarks = function () {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
 
 export const addBookmark = function (recipe) {
   // add bookmark
@@ -81,6 +84,7 @@ export const addBookmark = function (recipe) {
 
   //
   state.recipe.bookmarked = true;
+  persistBookmarks();
 };
 
 export const deleteBookmark = function (id) {
@@ -90,4 +94,15 @@ export const deleteBookmark = function (id) {
   state.bookmarks.splice(index, 1);
   //undo the bookmark
   state.recipe.bookmarked = false;
+  persistBookmarks();
+};
+
+export const init = function () {
+  const storage = localStorage.getItem('bookmarks');
+  if (storage) state.bookmarks = JSON.parse(storage);
+  if (!storage) state.bookmarks = [];
+};
+
+export const clearBookmarks = function () {
+  localStorage.clear('bookmarks');
 };
