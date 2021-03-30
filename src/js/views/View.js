@@ -5,7 +5,16 @@ export default class View {
   _clear() {
     this._parentElement.innerHTML = '';
   }
-  render(data) {
+
+  /**
+   * Render the received object to the DOM
+   * @param {Object|Object[]} data The data to be rendered (e.g recipe)
+   * @param {boolean} [render=true] If false return renderError instead of undefined
+   * @returns {undefined|string} A markup string string is returned if render=false
+   * @this {Object} View instance
+   * @author Nguyen Thanh Minh
+   */
+  render(data, render = true) {
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
     this._data = data;
@@ -37,13 +46,26 @@ export default class View {
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   };
+  renderMessage(message = this._message) {
+    const markup = `
+      <div class="message">
+        <div>
+          <svg>
+            <use href="${icons}#icon-smile"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>`;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
   update(data) {
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
     this._data = data;
     const newMarkup = this._generateMarkup();
 
-    /// create a DOM in computer memory not CHORME
+    /// create a DOM in computer memory not CHROME
     const newDOM = document.createRange().createContextualFragment(newMarkup);
     // convert NodeList to Array
     const newElements = Array.from(newDOM.querySelectorAll('*'));
@@ -63,6 +85,7 @@ export default class View {
       }
     });
   }
+
   static addHandlerStorage(handler) {
     window.addEventListener('storage', handler);
   }

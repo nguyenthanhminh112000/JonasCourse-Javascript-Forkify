@@ -1,6 +1,7 @@
 // This helpers.js is the place that we put the  General Function that will be used over the place
 
 /////////////////// IMPORT
+import { async } from 'regenerator-runtime';
 import { TIMEOUT_SEC } from './config.js';
 
 const timeout = function (s) {
@@ -11,9 +12,18 @@ const timeout = function (s) {
   });
 };
 
-export const getJSON = async function (url) {
+export const AJAX = async function (url, uploadData = undefined) {
   try {
-    const respond = await Promise.race([fetch(url), timeout(TIMEOUT_SEC)]);
+    const fetchPro = uploadData
+      ? fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(uploadData),
+        })
+      : fetch(url);
+    const respond = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)]);
     const data = await respond.json();
     if (!respond.ok) {
       throw new Error(`${respond.status} ${data.message}`);
@@ -24,3 +34,36 @@ export const getJSON = async function (url) {
   }
 };
 
+// export const getJSON = async function (url) {
+//   try {
+//     const fetchPro = fetch(url);
+//     const respond = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)]);
+//     const data = await respond.json();
+//     if (!respond.ok) {
+//       throw new Error(`${respond.status} ${data.message}`);
+//     }
+//     return data;
+//   } catch (err) {
+//     throw err;
+//   }
+// };
+
+// export const sendJSON = async function (url, uploadData) {
+//   try {
+//     const fetchPro = fetch(url, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(uploadData),
+//     });
+//     const respond = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)]);
+//     const data = await respond.json();
+//     if (!respond.ok) {
+//       throw new Error(`${respond.status} ${data.message}`);
+//     }
+//     return data;
+//   } catch (err) {
+//     throw err;
+//   }
+// };
