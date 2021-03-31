@@ -103,7 +103,7 @@ const controlAddRecipe = async function (newRecipe) {
 
     // render success announcement
     addRecipeView.renderMessage();
-    
+
     // close window && overlay
     setTimeout(() => {
       addRecipeView.toggleHiddenClass();
@@ -112,6 +112,9 @@ const controlAddRecipe = async function (newRecipe) {
     console.log(`${error.message} :)))))))))))))`);
     addRecipeView.renderError(`${error.message}`);
   }
+};
+const newFeature = function () {
+  console.log(`Welcome to Forkify application!`);
 };
 //////////////////////////// INIT AND SET-UP
 const init = function () {
@@ -123,5 +126,6 @@ const init = function () {
   View.addHandlerStorage(controlStorage);
   addRecipeView.addHandlerAddRecipe(controlAddRecipe);
   controlStorage();
+  newFeature();
 };
 init();
